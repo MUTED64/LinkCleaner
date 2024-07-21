@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>链接净化器</title>
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>链接净化器</h1>
+        <form id="urlForm">
+            <input type="url" id="urlInput" placeholder="输入需要净化的链接/短链接" required aria-label="输入需要净化的链接">
+            <button type="submit" id="submitBtn">净化</button>
+        </form>
+        <div id="loading" class="hidden">
+            <div class="spinner" aria-label="正在处理"></div>
+            <p>正在处理，请稍候...</p>
+        </div>
+        <div id="result" class="hidden"></div>
+        <div id="copyNotification" aria-live="polite">链接已复制到剪贴板</div>
+    </div>
+
+    <script type="module">
+        import { expandShortUrl, cleanUrl } from './index.js';
+
+        const urlForm = document.getElementById('urlForm');
+        const urlInput = document.getElementById('urlInput');
+        const result = document.getElementById('result');
+        const loading = document.getElementById('loading');
+        const copyNotification = document.getElementById('copyNotification');
+
+        urlForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = urlInput.value.trim();
+
+            loading.classList.remove('hidden');
+            result.classList.add('hidden');
+            copyNotification.classList.remove('show');
+
+            let expandedUrl = url;
+            try {
+                expandedUrl = await expandShortUrl(url) || url;
+            } catch (error) {
+                console.error('Error expanding URL:', error);
+            } finally {
+                const cleanedUrl = await cleanUrl(expandedUrl);
+                result.innerHTML = `
+                    <div>
+                        <strong>净化后的URL:</strong><br>
+                        <span id="cleanedUrlText">${cleanedUrl}</span>
+                    </div>
+                    <button id="copyBtn" aria-label="复制链接"><span class="icon-copy"></span></button>
+                `;
+                result.classList.remove('hidden');
+                loading.classList.add('hidden');
+
+                const copyBtn = document.getElementById('copyBtn');
+                copyBtn.addEventListener('click', () => {
+                    copyToClipboard(cleanedUrl);
+                });
+
+                copyToClipboard(cleanedUrl);
+            }
+        });
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                copyNotification.classList.add('show');
+                setTimeout(() => {
+                    copyNotification.classList.remove('show');
+                }, 2000);
+            }).catch(err => {
+                console.error('复制到剪贴板失败: ', err);
+                alert('复制到剪贴板失败，请手动复制链接。');
+            });
+        }
+
+        urlInput.addEventListener('focus', () => {
+            urlInput.style.transform = 'scale(1.02)';
+        });
+
+        urlInput.addEventListener('blur', () => {
+            urlInput.style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+
+</html>
