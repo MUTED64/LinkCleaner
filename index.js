@@ -1,14 +1,13 @@
 import cleanRules from "./clean-rules.js";
 
 async function expandShortUrl(url) {
-  const API_URL = `https://api.oioweb.cn/api/site/UrlRevert?url=${encodeURIComponent(
-    url
-  )}`;
+  const API_URL = `https://api.redirhub.com/json/tool/redirects`;
+  const DATA = {url: url, refresh: false};
 
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, {method: 'POST', body: JSON.stringify(DATA)});
     const data = await response.json();
-    return data.result;
+    return data.data.pop().url;
   } catch (error) {
     throw error;
   }
