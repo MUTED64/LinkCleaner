@@ -1,14 +1,12 @@
 import cleanRules from "./clean-rules.js";
 
 async function expandShortUrl(url) {
-  const API_URL = `https://api.oioweb.cn/api/site/UrlRevert?url=${encodeURIComponent(
-    url
-  )}`;
+  const API_URL = `https://api.szfx.top/longurl/?url=${url}`;
 
   try {
     const response = await fetch(API_URL);
     const data = await response.json();
-    return data.result;
+    return data.orinalUrl;
   } catch (error) {
     throw error;
   }
