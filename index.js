@@ -4,7 +4,7 @@ async function expandShortUrl(url) {
   const API_URL = `https://api.szfx.top/longurl/?url=${url}`;
 
   try {
-    const response = await fetch(API_URL, {method: 'POST', body: JSON.stringify(DATA)});
+    const response = await fetch(API_URL);
     const data = await response.json();
     return data.orinalUrl;
   } catch (error) {
