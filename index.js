@@ -1,13 +1,12 @@
 import cleanRules from "./clean-rules.js";
 
 async function expandShortUrl(url) {
-  const API_URL = `https://api.redirhub.com/json/tool/redirects`;
-  const DATA = {url: url, refresh: false};
+  const API_URL = `https://api.szfx.top/longurl/?url=${url}`;
 
   try {
     const response = await fetch(API_URL, {method: 'POST', body: JSON.stringify(DATA)});
     const data = await response.json();
-    return data.data.pop().url;
+    return data.orinalUrl;
   } catch (error) {
     throw error;
   }
