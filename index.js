@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const urls = text.match(urlRegex);
 
     if (!urls) {
-      resultText.textContent = "输入中不存在URL。";
+      resultText.textContent = "输入中不存在 URL。";
       resultDiv.style.display = "block";
       return;
     }
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cleanedUrl = await cleanUrl(expandedUrl);
         processedText = processedText.replace(url, cleanedUrl);
       } catch (error) {
-        console.error(`处理URL时出错: ${url}`, error);
+        console.error(`处理 URL 时出错: ${url}`, error);
       }
     }
 
